@@ -16,7 +16,7 @@
 
 //#define CL_HPP_ENABLE_EXCEPTIONS
 #define CL_HPP_TARGET_OPENCL_VERSION 200
-#define CL_HPP_MINIMUM_OPENCL_VERSION 120   
+#define CL_HPP_MINIMUM_OPENCL_VERSION 200   
 
 #include <vector>
 #include <iostream>
@@ -273,26 +273,63 @@ extern "C"
 		PlatformDeviceInformation(cl::Platform p)
 		{
 			platform = p;
-			std::cout << "test1" << std::endl;
+			
 			devicesCPU = std::vector<cl::Device>();
 			devicesGPU = std::vector<cl::Device>();
 			devicesACC = std::vector<cl::Device>();
-
+			std::vector<cl::Device> devicesCPUtmp;
+			std::vector<cl::Device> devicesGPUtmp;
+			std::vector<cl::Device> devicesACCtmp;
 			cl_int err;
-			err = (p.getDevices(CL_DEVICE_TYPE_CPU, &devicesCPU));
-			err = (p.getDevices(CL_DEVICE_TYPE_GPU, &devicesGPU));
-			err = (p.getDevices(CL_DEVICE_TYPE_ACCELERATOR, &devicesACC));
-			std::cout << "test2" << std::endl;
+			err = (p.getDevices(CL_DEVICE_TYPE_CPU, &devicesCPUtmp));
+			err = (p.getDevices(CL_DEVICE_TYPE_GPU, &devicesGPUtmp));
+			err = (p.getDevices(CL_DEVICE_TYPE_ACCELERATOR, &devicesACCtmp));
+			
 	
 			cl::string nameString;
 			cl::string vendorString;
 			err = handleError(p.getInfo(CL_PLATFORM_NAME, &nameString));
 			err = handleError(p.getInfo(CL_PLATFORM_VENDOR, &vendorString));
-
+		
 			nameStr = new StringInformation(nameString.size());
 			vendorStr = new StringInformation(vendorString.size());
 			nameStr->writeString(nameString.data());
 			vendorStr->writeString(vendorString.data());
+
+
+			int cpuN = devicesCPUtmp.size();
+			int gpuN = devicesGPUtmp.size();
+			int accN = devicesACCtmp.size();
+			for (int i = 0; i < cpuN; i++)
+			{
+				char majorVer = devicesCPUtmp[i].getInfo<CL_DEVICE_OPENCL_C_VERSION>().at(9);
+				// lefthandside nums, numpad
+				if ((majorVer == '2') || (majorVer == '2'))
+				{
+					devicesCPU.push_back(devicesCPUtmp[i]);
+				}
+			}
+
+			for (int i = 0; i < gpuN; i++)
+			{
+				char majorVer = devicesGPUtmp[i].getInfo<CL_DEVICE_OPENCL_C_VERSION>().at(9);
+				// lefthandside nums, numpad
+				if ((majorVer == '2') || (majorVer == '2'))
+				{
+					devicesGPU.push_back(devicesGPUtmp[i]);
+				}
+			}
+
+			for (int i = 0; i < accN; i++)
+			{
+				char majorVer = devicesACCtmp[i].getInfo<CL_DEVICE_OPENCL_C_VERSION>().at(9);
+				// lefthandside nums, numpad
+				if ((majorVer == '2') || (majorVer == '2'))
+				{
+					devicesACC.push_back(devicesACCtmp[i]);
+				}
+			}
+
 		}
 
 		~PlatformDeviceInformation()
