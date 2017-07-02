@@ -727,13 +727,24 @@ extern "C"
 
 	public:
 		cl::CommandQueue commandQueue;
+		cl_command_queue device_queue=NULL; 
 		OpenClCommandQueue(cl::Context context, cl::Device device, int async,bool defaultQueue=false)
 		{
 			counter = 0;
 			cl_int err;
 			if (defaultQueue)
 			{
-				commandQueue = cl::CommandQueue(context, device, CL_QUEUE_ON_DEVICE|CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE | CL_QUEUE_ON_DEVICE_DEFAULT, &err);
+				
+				cl_uint qsMax = device.getInfo<CL_DEVICE_QUEUE_ON_DEVICE_MAX_SIZE>();
+				cl_uint qsPref = device.getInfo<CL_DEVICE_QUEUE_ON_DEVICE_PREFERRED_SIZE>();
+				//cl_uint qs=device.getInfo<CL_DEVICE_QUEUE_ON_DEVICE_PREFERRED_SIZE>();
+
+				cl_queue_properties qprop[] = { CL_QUEUE_SIZE,(qsPref+qsMax)/2, CL_QUEUE_PROPERTIES, (cl_command_queue_properties)(CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE | CL_QUEUE_ON_DEVICE | CL_QUEUE_ON_DEVICE_DEFAULT | CL_QUEUE_PROFILING_ENABLE), 0 };
+				device_queue = clCreateCommandQueueWithProperties(context.get(), device.get(), qprop, &err);
+				//cl::DeviceQueueProperties dqp = cl::DeviceQueueProperties::Profiling;
+				//commandQueue = cl::CommandQueue(context, device, CL_QUEUE_ON_DEVICE | CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE | CL_QUEUE_ON_DEVICE_DEFAULT, &err);
+				//deviceCommandQueue = cl::DeviceCommandQueue(context, device, 1024*16, qprop, &err);
+				
 			}
 			else
 			{ 
@@ -788,7 +799,10 @@ extern "C"
 
 		~OpenClCommandQueue()
 		{
-
+			if (device_queue != NULL)
+			{
+				clReleaseCommandQueue(device_queue);
+			}
 		}
 	};
 
@@ -851,7 +865,7 @@ extern "C"
 
 			program = cl::Program(context, string);
 
-			err__ = program.build("-cl-std=CL2.0", 0, 0);
+			err__ = program.build("-cl-std=CL2.0 -g -D CL_VERSION_2_0", 0, 0);
 
 
 			size_t *logSize = new size_t[1];
