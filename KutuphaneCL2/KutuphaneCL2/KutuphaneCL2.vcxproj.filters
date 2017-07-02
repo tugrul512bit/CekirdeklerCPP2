@@ -28,7 +28,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Version.rc">
+    <ResourceCompile Include="KutuphaneCL2.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>

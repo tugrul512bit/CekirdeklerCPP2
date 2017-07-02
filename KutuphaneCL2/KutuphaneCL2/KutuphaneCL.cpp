@@ -340,15 +340,8 @@ extern "C"
 			handleError(cl::Platform::get(&platformsTmp));
 			for (int i = 0; i < platformsTmp.size(); i++)
 			{
-				//CL_PLATFORM_VERSION(1.2 or 2.0) numpad 1 , keypad 1 possible bug with different chars
-				if (platformsTmp[i].getInfo<CL_PLATFORM_VERSION>().at(7) == '1' || platformsTmp[i].getInfo<CL_PLATFORM_VERSION>().at(7) == '1')
-				{
-					if (platformsTmp[i].getInfo<CL_PLATFORM_VERSION>().at(9) == '2' || platformsTmp[i].getInfo<CL_PLATFORM_VERSION>().at(9) == '2')
-					{
-						platforms.push_back(platformsTmp[i]);
-					}
-				}
-				else if (platformsTmp[i].getInfo<CL_PLATFORM_VERSION>().at(7) == '2' || platformsTmp[i].getInfo<CL_PLATFORM_VERSION>().at(7) == '2')
+				//CL_PLATFORM_VERSION(2.x) numpad 1 , keypad 1 possible bug with different chars
+				if (platformsTmp[i].getInfo<CL_PLATFORM_VERSION>().at(7) == '2' || platformsTmp[i].getInfo<CL_PLATFORM_VERSION>().at(7) == '2')
 				{
 					bool adding = false;
 					if (platformsTmp[i].getInfo<CL_PLATFORM_VERSION>().at(9) == '0' || platformsTmp[i].getInfo<CL_PLATFORM_VERSION>().at(9) == '0')
