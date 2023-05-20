@@ -303,8 +303,8 @@ extern "C"
 			for (int i = 0; i < cpuN; i++)
 			{
 				char majorVer = devicesCPUtmp[i].getInfo<CL_DEVICE_OPENCL_C_VERSION>().at(9);
-				// lefthandside nums, numpad
-				if ((majorVer == '2') || (majorVer == '2'))
+				
+				if ((majorVer >= '2'))
 				{
 					devicesCPU.push_back(devicesCPUtmp[i]);
 				}
@@ -313,8 +313,8 @@ extern "C"
 			for (int i = 0; i < gpuN; i++)
 			{
 				char majorVer = devicesGPUtmp[i].getInfo<CL_DEVICE_OPENCL_C_VERSION>().at(9);
-				// lefthandside nums, numpad
-				if ((majorVer == '2') || (majorVer == '2'))
+				
+				if ((majorVer >= '2'))
 				{
 					devicesGPU.push_back(devicesGPUtmp[i]);
 				}
@@ -323,8 +323,8 @@ extern "C"
 			for (int i = 0; i < accN; i++)
 			{
 				char majorVer = devicesACCtmp[i].getInfo<CL_DEVICE_OPENCL_C_VERSION>().at(9);
-				// lefthandside nums, numpad
-				if ((majorVer == '2') || (majorVer == '2'))
+				
+				if ((majorVer >= '2'))
 				{
 					devicesACC.push_back(devicesACCtmp[i]);
 				}
